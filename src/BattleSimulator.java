@@ -28,12 +28,7 @@ public class BattleSimulator {
         boolean army1Victory = false;
         if (army2.isDead()) {
             army1Victory = true;
-        } else {
-            if (!army1.isBotArmy) {
-                army1Victory = true;
-            }
         }
-
         return new BattleResult(army1.getRemainingTroopCount(), army2.getRemainingTroopCount(), army1Victory);
     }
 

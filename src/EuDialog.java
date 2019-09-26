@@ -2,6 +2,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Label;
 
+import java.text.DecimalFormat;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
@@ -182,11 +184,11 @@ public class EuDialog {
     	btnSingleRoundBattle.setText("Single Round Battle");
     	
     	Button tercios2 = new Button(shell, SWT.CHECK);
-    	tercios2.setBounds(365, 107, 65, 18);
+    	tercios2.setBounds(349, 107, 65, 18);
     	tercios2.setText("Tercios");
     	
     	Button nobleKnights2 = new Button(shell, SWT.CHECK);
-    	nobleKnights2.setBounds(436, 107, 94, 18);
+    	nobleKnights2.setBounds(420, 107, 109, 18);
     	nobleKnights2.setText("Noble Knights");
     	
     	Button militaryDrill2 = new Button(shell, SWT.CHECK);
@@ -195,7 +197,7 @@ public class EuDialog {
     	
     	Button nobleKnights1 = new Button(shell, SWT.CHECK);
     	nobleKnights1.setText("Noble Knights");
-    	nobleKnights1.setBounds(420, 32, 94, 18);
+    	nobleKnights1.setBounds(420, 32, 115, 18);
     	
     	Button terciosArmy1 = new Button(shell, SWT.CHECK);
     	terciosArmy1.setText("Tercios");
@@ -230,7 +232,8 @@ public class EuDialog {
     			
     			
     			
-    	        Double averageRemainingIn1 = 0.0, averageRemainingIn2 = 0.0, winCountForArmy1 = 0.0, winCountForArmy2 = 0.0;
+    	        Double averageRemainingIn1 = 0.0, averageRemainingIn2 = 0.0, winCountForArmy1 = 0.0, winCountForArmy2 = 0.0, 
+    	        		averageRemainingIn1Victories = 0.0, averageRemainingIn2Victories = 0.0;
     	        boolean isSingleRound = btnSingleRoundBattle.getSelection();
     	        for (int i = 0; i < 1000; i++) {
     	        	
@@ -242,9 +245,16 @@ public class EuDialog {
         					Integer.parseInt(cavCountArmy2.getText()), 
         					Integer.parseInt(artCountArmy2.getText()), ifArmy2Tercios, ifArmy2NobleKnights, ifArmy2MilitaryDrill);
 
-        			battleSimulator.conductBattle(army1, army2, isSingleRound);
+        			BattleResult battleResult = battleSimulator.conductBattle(army1, army2, isSingleRound);
     	            averageRemainingIn1 += army1.getRemainingTroopCount();
     	            averageRemainingIn2 += army2.getRemainingTroopCount();
+    	            
+    	            if (battleResult.didArmyAWin) {
+    	            	averageRemainingIn1Victories += army1.getRemainingTroopCount();
+    	            } else {
+    	            	averageRemainingIn2Victories += army2.getRemainingTroopCount();
+    	            }
+    	            
     	            if (army1.isDead()) {
     	                winCountForArmy2++;
     	            } else {
@@ -254,16 +264,34 @@ public class EuDialog {
 
     	        averageRemainingIn1 = (averageRemainingIn1/1000);
     	        averageRemainingIn2 = (averageRemainingIn2/1000);
+    	        
+    	        averageRemainingIn1Victories = (averageRemainingIn1Victories/winCountForArmy1);
+    	        averageRemainingIn2Victories = (averageRemainingIn2Victories/winCountForArmy2);
 
+    	        if (winCountForArmy1 == 0.0) {
+    	        	averageRemainingIn1Victories = 0.0;
+    	        } 
+    	        if (winCountForArmy2 == 0.0) {
+    	        	averageRemainingIn2Victories = 0.0;
+    	        }
+    	        
+    	        DecimalFormat numberFormat = new DecimalFormat("#.0");
     	        Double winPercentageForA = winCountForArmy1/1000;
-
+    	        
+    	        String formatted2Victories = numberFormat.format(averageRemainingIn2Victories);
+    	        String formatted1Victories = numberFormat.format(averageRemainingIn1Victories);
+    	        String formattedPercentage = numberFormat.format(winPercentageForA*100);
+    	        
     	        StringBuilder stringBuilder = new StringBuilder();
     	        stringBuilder.append("Average Remaining in Army 1:  " + averageRemainingIn1 + "\n");
     	        stringBuilder.append("Average Remaining in Army 2:  " + averageRemainingIn2 + "\n");
+    	        stringBuilder.append("Average Remaining in Army 1 in Victories:  " + formatted1Victories + "\n");
+    	        stringBuilder.append("Average Remaining in Army 2 in Victories:  " + formatted2Victories + "\n");
     	        stringBuilder.append("Win Count for Army 1:         " + winCountForArmy1 + "\n");
     	        stringBuilder.append("Win Count for Army 2:         " + winCountForArmy2 + "\n");
-    	        stringBuilder.append("Win Percentage for Army 1:         " + winPercentageForA + "\n");
-    	        
+    	        stringBuilder.append("Win Percentage for Army 1:         " + formattedPercentage + "%\n");
+    	        stringBuilder.append("Note: Mutual Army Wipes count as wins for Army 2.\n To simulate an attacker failing to take the area");
+
     	        resultsLog.setText(stringBuilder.toString());
     		}
     	});

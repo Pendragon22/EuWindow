@@ -136,6 +136,7 @@ public class Army {
         int militaryDrillBonus = 0;
         if (hasMilitaryDrill) {
         	militaryDrillBonus++;
+        	this.general.numberOfInfantryDice++;
         }
         
         return numberOfInfHits + numberOfCavHits + numberOfArtHits + militaryDrillBonus;
@@ -167,8 +168,9 @@ public class Army {
                     } else if (artilleryCount != 0){
                         artilleryCount--;
                         numberOfHitsToTake--;
+                    } else {
+                    	numberOfHitsToTake--;
                     }
-                    numberOfHitsToTake--;
                 }
             }
         }
