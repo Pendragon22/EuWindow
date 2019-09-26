@@ -38,6 +38,11 @@ public class Army {
 
     int attack() {
         int numberOfInfHits = 0, numberOfCavHits = 0, numberOfArtHits = 0;
+        
+        if (hasMilitaryDrill) {
+        	this.general.numberOfInfantryDice--;
+        }
+        
         for (int i = 0 ; i < 3 + this.general.numberOfInfantryDice ; i++) {
             InfantryDice infantryDice = new InfantryDice();
             DiceResult infantryDiceResult = infantryDice.roll();
@@ -46,21 +51,64 @@ public class Army {
                 if (DiceResult.DOUBLE_INFANTRY_SYMBOL == infantryDiceResult && hasTercios) {
                 	numberOfInfHits++;
                 }
+            } else if (DiceResult.CAVALRY_SYMBOL == infantryDiceResult) {
+            	numberOfCavHits++;
+            } else if (DiceResult.ARTILLERY_SYMBOL == infantryDiceResult) {
+            	numberOfArtHits++;
             }
         }
         if (numberOfInfHits > infantryCount) {
         	numberOfInfHits = infantryCount;
         }
+        if (numberOfCavHits > cavalryCount) {
+        	numberOfCavHits = cavalryCount;
+        }
+        if (numberOfArtHits > artilleryCount) {
+        	numberOfArtHits = artilleryCount;
+        }
+
         int numberOfCavRerolls = 0;
         for (int i = 0; i < this.general.numberOfCavalryyDice; i++) {
             CavalryDice cavalryDice = new CavalryDice();
             DiceResult cavalryDiceResult = cavalryDice.roll();
             if (DiceResult.CAVALRY_SYMBOL == cavalryDiceResult){
                 numberOfCavHits++;
-            }
-            if (DiceResult.DOUBLE_INFANTRY_SYMBOL == cavalryDiceResult){
+                if (hasTercios && (numberOfInfHits + 2 >= infantryCount)) {
+                	numberOfCavHits--;
+                	numberOfInfHits += 2;
+                } else if (numberOfCavHits > cavalryCount && numberOfInfHits < numberOfInfHits && hasNobleKnights && numberOfCavRerolls < 2) {
+                	cavalryDiceResult = cavalryDice.roll();
+                	numberOfCavRerolls++;
+                    if (DiceResult.INFANTRY_SYMBOL == cavalryDiceResult || DiceResult.DOUBLE_INFANTRY_SYMBOL == cavalryDiceResult){
+                        numberOfInfHits++;
+                        numberOfCavHits--;
+                    }
+                } 
+                
+            } else if (DiceResult.INFANTRY_SYMBOL == cavalryDiceResult || DiceResult.DOUBLE_INFANTRY_SYMBOL == cavalryDiceResult){
                 numberOfInfHits++;
+                if (numberOfInfHits > infantryCount && numberOfCavHits < cavalryCount && hasNobleKnights && numberOfCavRerolls < 2) {
+                	cavalryDiceResult = cavalryDice.roll();
+                	numberOfCavRerolls++;
+                    if (DiceResult.CAVALRY_SYMBOL == cavalryDiceResult){
+                    	numberOfCavHits++;
+                        numberOfInfHits--;
+                    }
+                }
+                if (DiceResult.DOUBLE_INFANTRY_SYMBOL == cavalryDiceResult && hasTercios) {
+                	numberOfInfHits++;
+                }
             }
+            
+        }
+        if (numberOfInfHits > infantryCount) {
+        	numberOfInfHits = infantryCount;
+        }
+        if (numberOfCavHits > cavalryCount) {
+        	numberOfCavHits = cavalryCount;
+        }
+        if (numberOfArtHits > artilleryCount) {
+        	numberOfArtHits = artilleryCount;
         }
         for (int i = 0; i < this.general.numberOfArtilleryDice; i++) {
             ArtilleryDice artilleryDice = new ArtilleryDice();
@@ -68,14 +116,29 @@ public class Army {
             if (DiceResult.ARTILLERY_SYMBOL == artilleryDiceResult){
                 numberOfArtHits++;
             }
-            if (DiceResult.DOUBLE_INFANTRY_SYMBOL == artilleryDiceResult){
+            if (DiceResult.INFANTRY_SYMBOL == artilleryDiceResult || DiceResult.DOUBLE_INFANTRY_SYMBOL == artilleryDiceResult){
                 numberOfInfHits++;
+                if (DiceResult.DOUBLE_INFANTRY_SYMBOL == artilleryDiceResult && hasTercios) {
+                	numberOfInfHits++;
+                }
             }
         }
+        if (numberOfInfHits > infantryCount) {
+        	numberOfInfHits = infantryCount;
+        }
+        if (numberOfCavHits > cavalryCount) {
+        	numberOfCavHits = cavalryCount;
+        }
+        if (numberOfArtHits > artilleryCount) {
+        	numberOfArtHits = artilleryCount;
+        }
 
-
-
-        return numberOfInfHits + numberOfCavHits + numberOfArtHits;
+        int militaryDrillBonus = 0;
+        if (hasMilitaryDrill) {
+        	militaryDrillBonus++;
+        }
+        
+        return numberOfInfHits + numberOfCavHits + numberOfArtHits + militaryDrillBonus;
     }
 
     public int getRemainingTroopCount() {
