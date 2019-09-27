@@ -74,10 +74,7 @@ public class Army {
             DiceResult cavalryDiceResult = cavalryDice.roll();
             if (DiceResult.CAVALRY_SYMBOL == cavalryDiceResult){
                 numberOfCavHits++;
-                if (hasTercios && (numberOfInfHits + 2 >= infantryCount)) {
-                	numberOfCavHits--;
-                	numberOfInfHits += 2;
-                } else if (numberOfCavHits > cavalryCount && numberOfInfHits < numberOfInfHits && hasNobleKnights && numberOfCavRerolls < 2) {
+                if (numberOfCavHits > cavalryCount && numberOfInfHits < numberOfInfHits && hasNobleKnights && numberOfCavRerolls < 2) {
                 	cavalryDiceResult = cavalryDice.roll();
                 	numberOfCavRerolls++;
                     if (DiceResult.INFANTRY_SYMBOL == cavalryDiceResult || DiceResult.DOUBLE_INFANTRY_SYMBOL == cavalryDiceResult){
