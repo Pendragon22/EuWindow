@@ -1,3 +1,4 @@
+package service;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Label;
@@ -107,7 +108,7 @@ public class EuDialog {
     	lblInfatryDice.setText("Extra Infatry Dice:");
     	
     	infDiceArmy1 = new Text(shell, SWT.BORDER);
-    	infDiceArmy1.setBounds(117, 73, 54, 19);
+    	infDiceArmy1.setBounds(117, 73, 47, 19);
     	infDiceArmy1.setText("0");
 
     	Label lblCavalryDice = new Label(shell, SWT.NONE);
@@ -290,7 +291,7 @@ public class EuDialog {
     	        stringBuilder.append("Win Count for Army 1:         " + winCountForArmy1 + "\n");
     	        stringBuilder.append("Win Count for Army 2:         " + winCountForArmy2 + "\n");
     	        stringBuilder.append("Win Percentage for Army 1:         " + formattedPercentage + "%\n");
-    	        stringBuilder.append("Note: Mutual Army Wipes count as wins for Army 2.\n To simulate an attacker failing to take the area");
+    	        stringBuilder.append("Note: Mutual Army Wipes count as wins for Army 2.\nTo simulate an attacker failing to take the area");
 
     	        resultsLog.setText(stringBuilder.toString());
     		}
